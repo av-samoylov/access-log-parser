@@ -1,27 +1,46 @@
 package ru.courses.agent;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Statistics {
-    private  int totalTraffic;
-    private LocalDateTime minTime;
-    private LocalDateTime maxTime;
+    private int totalTraffic = 0;
+    private LocalDateTime minTime = null;
+    private LocalDateTime maxTime = null;
+    private final Map<String, Integer> browserCounts = new HashMap<>();
+    private int totalEntries = 0;
 
-    public Statistics(){
-        this.totalTraffic = 0;
-        this.minTime = LocalDateTime.MAX;
-        this.maxTime = LocalDateTime.MIN;
-    }
-
-    public void addLogEntry(LogEntry entry){
+    public void addEntry(LogEntry entry) {
         totalTraffic += entry.getResponseSize();
-        if (entry.getReguestTime().isBefore(minTime)) minTime = entry.getReguestTime();
-        if (entry.getReguestTime().isAfter(maxTime)) maxTime = entry.getReguestTime();
+        totalEntries++;
+
+        if (minTime == null || entry.getDateTime().isBefore(minTime)) {
+            minTime = entry.getDateTime();
+        }
+        if (maxTime == null || entry.getDateTime().isAfter(maxTime)) {
+            maxTime = entry.getDateTime();
+        }
+
+        String browser = entry.getUserAgent().getBrowser();
+        browserCounts.put(browser, browserCounts.getOrDefault(browser, 0) + 1);
     }
 
     public double getTrafficRate() {
-        long hoursDiff = java.time.Duration.between(minTime, maxTime).toHours();
-        if (hoursDiff == 0) return totalTraffic;
-        return (double) totalTraffic / hoursDiff;
+        if (minTime == null || maxTime == null || minTime.equals(maxTime)) {
+            return 0;
+        }
+
+        long hours = java.time.Duration.between(minTime, maxTime).toHours();
+        return (hours > 0) ? (double) totalTraffic / hours : totalTraffic;
+    }
+
+    public Map<String, Double> getBrowserStatistics() {
+        Map<String, Double> stats = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : browserCounts.entrySet()) {
+            stats.put(entry.getKey(), (double) entry.getValue() / totalEntries * 100);
+        }
+        return stats;
     }
 }
