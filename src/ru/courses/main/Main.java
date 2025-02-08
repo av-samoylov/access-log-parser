@@ -1,7 +1,8 @@
 package ru.courses.main;
 
-import ru.courses.agent.LogEntry;
-import ru.courses.agent.Statistics;
+
+import ru.courses.collections.task_1.LogEntry;
+import ru.courses.collections.task_1.Statistics;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -29,7 +30,7 @@ public class Main {
         System.out.println("Средний трафик за час: " + stats.getTrafficRate());
 
         System.out.println("Статистика браузеров:");
-        for (Map.Entry<String, Double> entry : stats.getBrowserStatistics().entrySet()) {
+        for (Map.Entry<String, Double> entry : stats.getOsStatistics().entrySet()) {
             System.out.println(entry.getKey() + ": " + String.format("%.3f", entry.getValue()) + "%");
         }
     }
