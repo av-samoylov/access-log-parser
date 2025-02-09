@@ -1,8 +1,8 @@
 package ru.courses.main;
 
 
-import ru.courses.collections.task_1.LogEntry;
-import ru.courses.collections.task_1.Statistics;
+import ru.courses.collections.task_2.LogEntry;
+import ru.courses.collections.task_2.Statistics;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
