@@ -1,7 +1,7 @@
 package ru.courses.main;
 
-import ru.courses.streamAPI.task_1.LogEntry;
-import ru.courses.streamAPI.task_1.Statistics;
+import ru.courses.streamAPI.task_2.LogEntry;
+import ru.courses.streamAPI.task_2.Statistics;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,31 +10,29 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        Statistics stats = new Statistics();
+        Statistics statistics = getStatistics();
 
+        System.out.println("Пик трафика веб-сайта в секунду: " + statistics.getPeakVisitsPerSecond());
+        System.out.println("Максимальное количество посещений сайта одним пользователем: " + statistics.getMaxVisitsByOneUser());
+        System.out.println("Список сайтов с ссылками на текущий сайт: " + statistics.getReferers());
+    }
+
+    private static Statistics getStatistics() {
+        Statistics statistics = new Statistics();
         try (BufferedReader br = new BufferedReader(new FileReader("access.txt"))) {
             String line;
+            LogEntry entry;
             while ((line = br.readLine()) != null) {
                 try {
-                    LogEntry entry = new LogEntry(line);
-                    stats.addEntry(entry);
+                    entry = new LogEntry(line);
                 } catch (Exception e) {
-                    System.err.println("Ошибка разбора строки: " + e.getMessage());
+                    throw new RuntimeException(e);
                 }
+                statistics.addEntry(entry);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения файла: " + e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-
-        System.out.println("Средний трафик за час: " + stats.getTrafficRate());
-
-        System.out.println("Статистика браузеров:");
-        for (Map.Entry<String, Double> entry : stats.getOsStatistics().entrySet()) {
-            System.out.println(entry.getKey() + ": " + String.format("%.3f", entry.getValue()) + "%");
-        }
-
-        System.out.println("Среднее количество посещений в час: " + stats.getAverageSiteVisitsPerHour());
-        System.out.println("Среднее количество ошибочных запросов в час: " + stats.getAverageErrorRequestsPerHour());
-        System.out.println("Средняя посещаемость одним пользователем: " + stats.getAverageVisitsPerUser());
+        return statistics;
     }
 }
