@@ -1,8 +1,7 @@
 package ru.courses.main;
 
-
-import ru.courses.collections.task_2.LogEntry;
-import ru.courses.collections.task_2.Statistics;
+import ru.courses.streamAPI.task_1.LogEntry;
+import ru.courses.streamAPI.task_1.Statistics;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -33,5 +32,9 @@ public class Main {
         for (Map.Entry<String, Double> entry : stats.getOsStatistics().entrySet()) {
             System.out.println(entry.getKey() + ": " + String.format("%.3f", entry.getValue()) + "%");
         }
+
+        System.out.println("Среднее количество посещений в час: " + stats.getAverageSiteVisitsPerHour());
+        System.out.println("Среднее количество ошибочных запросов в час: " + stats.getAverageErrorRequestsPerHour());
+        System.out.println("Средняя посещаемость одним пользователем: " + stats.getAverageVisitsPerUser());
     }
 }
